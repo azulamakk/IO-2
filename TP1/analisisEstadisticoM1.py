@@ -76,6 +76,40 @@ def ronda(jugadores):
 
     return (False, segundosJugados)
 
+muestras = [25, 100, 500, 1000, 5000, 10000]
+
+for cantidadMuestras in muestras:
+    minutosJugadosN = []
+    cantRondasN = []
+    for i in range(cantidadMuestras):
+        (minutosJugados, cantRondas) = run(4)
+        minutosJugadosN.append(minutosJugados)
+        cantRondasN.append(cantRondas)
+        
+    print(f"\nResultados para {cantidadMuestras} muestras con 4 jugadores:")
+    print("Minutos jugados:")
+    print("Media:", np.mean(minutosJugadosN))
+    print("Desviación estándar:", np.std(minutosJugadosN))
+    print("Máximo:", np.max(minutosJugadosN))
+    print("Mínimo:", np.min(minutosJugadosN))
+    print("Q1:", np.percentile(minutosJugadosN, 25))
+    print("Mediana:", np.median(minutosJugadosN))
+    print("Q3:", np.percentile(minutosJugadosN, 75))
+    
+    plt.hist(minutosJugadosN, bins=20, color='navy', edgecolor='black')
+    plt.title(f'Histograma de Minutos Jugados para 4 jugadores ({cantidadMuestras} muestras)')
+    plt.xlabel('Minutos jugados')
+    plt.ylabel('Frecuencia')
+    plt.grid(True)
+    plt.show()
+
+    plt.hist(cantRondasN, bins=20, color='navy', edgecolor='black')
+    plt.title(f'Histograma de Cantidad de Rondas para 4 jugadores ({cantidadMuestras} muestras)')
+    plt.xlabel('Cantidad de rondas')
+    plt.ylabel('Frecuencia')
+    plt.grid(True)
+    plt.show()
+
 muestras = [10000]
 
 for cantidadMuestras in muestras:
@@ -85,7 +119,8 @@ for cantidadMuestras in muestras:
         (minutosJugados, cantRondas) = run(4)
         minutosJugadosN.append(minutosJugados)
         cantRondasN.append(cantRondas)
-  
+
+
 # Test de Kolmogorov-Smirnov para las rondas
 ks_stat_rondas, p_value_rondas = kstest(cantRondasN, 'norm', args=(np.mean(cantRondasN), np.std(cantRondasN)))
 
@@ -130,7 +165,23 @@ print("\nTest de Kolmogorov-Smirnov para los minutos jugados:")
 print("Estadístico KS:", ks_stat_minutos)
 print("Valor p:", '{:.20f}'.format(p_value_minutos))
 
+# Grafico Cantidad de jugadores vs Cantidad de muestras
+def simulacion_y_grafico(cantidadJugadores, cantidadMuestras):
+    resultados = []
+    for _ in range(cantidadMuestras):
+        minutos, _ = run(cantidadJugadores)
+        resultados.append(minutos)
 
+    plt.hist(resultados, bins=20, alpha=0.7, color='navy')
+    plt.xlabel('Minutos jugados', fontname='Times New Roman')
+    plt.ylabel('Frecuencia', fontname='Times New Roman')
+    plt.title(f'Histograma de minutos jugados ({cantidadJugadores} jugadores, {cantidadMuestras} muestras). Modalidad II.', fontname='Times New Roman')
+    plt.grid(False)
+    plt.show()
+
+simulacion_y_grafico(4, 10000)
+
+# Grafico bondad de ajuste
 plt.rcParams['font.family'] = 'Times New Roman'
 matplotlib.rcParams['mathtext.fontset'] = 'custom'
 matplotlib.rcParams['mathtext.it'] = 'Times New Roman:italic'
