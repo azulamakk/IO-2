@@ -92,17 +92,36 @@ for cantidadJugadores in range(1,500):
 print(datos_minutos)
 print(datos_rondas)
 
+for cantidadJugadores in [1, 2, 4, 10, 25, 50, 100, 250, 500]:
+    minutosJugadosN = []
+    cantRondasN = []
+    for i in range(100):
+        (minutosJugados, cantRondas) = run(cantidadJugadores)
+        minutosJugadosN.append(minutosJugados)
+        cantRondasN.append(cantRondas)
+        
+    print(f"\nResultados para {cantidadJugadores} jugadores:")
+    print("Minutos jugados:")
+    print("Media:", np.mean(minutosJugadosN))
+    print("Desviación estándar:", np.std(minutosJugadosN))
+    print("Máximo:", np.max(minutosJugadosN))
+    print("Mínimo:", np.min(minutosJugadosN))
+    print("Q1:", np.percentile(minutosJugadosN, 25))
+    print("Mediana:", np.median(minutosJugadosN))
+    print("Q3:", np.percentile(minutosJugadosN, 75))
+    print("Cantidad de rondas:", np.mean(cantRondasN))
+    
 plt.rc('font', family='Times New Roman')
 
-plt.plot(range(1,500), datos_minutos, marker='o')
-plt.title('Minutos jugados vs Cantidad de jugadores')
+plt.plot(range(1,500), datos_minutos, color='navy', marker='o')
+plt.title('Minutos jugados vs Cantidad de jugadores. Modalidad I.')
 plt.xlabel('Cantidad de jugadores')
 plt.ylabel('Minutos jugados')
 plt.grid(True)
 plt.show()
 
-plt.plot(range(1,500), datos_rondas, marker='o')
-plt.title('Cantidad de Rondas vs Cantidad de jugadores')
+plt.plot(range(1,500), datos_rondas, color='navy', marker='o')
+plt.title('Cantidad de Rondas vs Cantidad de jugadores. Modalidad I.')
 plt.xlabel('Cantidad de jugadores')
 plt.ylabel('Cantidad de rondas')
 plt.grid(True)

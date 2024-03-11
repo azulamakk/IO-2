@@ -1,11 +1,9 @@
-# En este archivo se simula el caso en el que el lobo, al tocar color negro solo tira una pared, la cual elige aleatoriamente
 import random
 import numpy as np
 import matplotlib.pyplot as plt
 
 colores = ['negro', 'rojo', 'azul', 'violeta', 'verde', 'amarillo']
 coloresNecesariosTecho = ['azul', 'violeta', 'verde', 'amarillo']
-
 
 def run(cantidadJugadores):
     jugadores = dict()
@@ -46,8 +44,10 @@ def turnoJugador(jugadorInfo):
         color = tirarDado()
 
         if color == 'negro':
-            for key in jugadorInfo:
-                jugadorInfo[key] = False
+            colores_activos = [key for key, value in jugadorInfo.items() if key != 'tiempoJugado' and value]
+            if colores_activos:
+                color_desactivar = random.choice(colores_activos)
+                jugadorInfo[color_desactivar] = False
             return False
         elif color == 'rojo': 
             for color in coloresNecesariosTecho:
@@ -72,33 +72,17 @@ def ronda(jugadores):
 
     return (False, segundosJugados)
 
+muestras = [25, 100, 500, 1000, 5000, 10000]
 
-datos_minutos = []
-datos_rondas = []
-
-for cantidadJugadores in range(1,500):
+for cantidadMuestras in muestras:
     minutosJugadosN = []
     cantRondasN = []
-    for i in range(100):
-        (minutosJugados, cantRondas) = run(cantidadJugadores)
+    for i in range(cantidadMuestras):
+        (minutosJugados, cantRondas) = run(4)
         minutosJugadosN.append(minutosJugados)
         cantRondasN.append(cantRondas)
         
-    datos_minutos.append(np.mean(minutosJugadosN))
-    datos_rondas.append(np.mean(cantRondasN))
-
-print(datos_minutos)
-print(datos_rondas)
-
-for cantidadJugadores in [1, 2, 4, 10, 25, 50, 100, 250, 500]:
-    minutosJugadosN = []
-    cantRondasN = []
-    for i in range(100):
-        (minutosJugados, cantRondas) = run(cantidadJugadores)
-        minutosJugadosN.append(minutosJugados)
-        cantRondasN.append(cantRondas)
-        
-    print(f"\nResultados para {cantidadJugadores} jugadores:")
+    print(f"\nResultados para {cantidadMuestras} muestras con 4 jugadores:")
     print("Minutos jugados:")
     print("Media:", np.mean(minutosJugadosN))
     print("Desviación estándar:", np.std(minutosJugadosN))
@@ -107,20 +91,17 @@ for cantidadJugadores in [1, 2, 4, 10, 25, 50, 100, 250, 500]:
     print("Q1:", np.percentile(minutosJugadosN, 25))
     print("Mediana:", np.median(minutosJugadosN))
     print("Q3:", np.percentile(minutosJugadosN, 75))
-    print("Cantidad de rondas:", np.mean(cantRondasN))
     
-plt.rc('font', family='Times New Roman')
+    plt.hist(minutosJugadosN, bins=20, color='navy', edgecolor='black')
+    plt.title(f'Histograma de Minutos Jugados para 4 jugadores ({cantidadMuestras} muestras)')
+    plt.xlabel('Minutos jugados')
+    plt.ylabel('Frecuencia')
+    plt.grid(True)
+    plt.show()
 
-plt.plot(range(1,500), datos_minutos, color='navy', marker='o')
-plt.title('Minutos jugados vs Cantidad de jugadores. Modalidad II.')
-plt.xlabel('Cantidad de jugadores')
-plt.ylabel('Minutos jugados')
-plt.grid(True)
-plt.show()
-
-plt.plot(range(1, 500), datos_rondas, color='navy', marker='o')
-plt.title('Cantidad de Rondas vs Cantidad de jugadores. Modalidad II.')
-plt.xlabel('Cantidad de jugadores')
-plt.ylabel('Cantidad de rondas')
-plt.grid(True)
-plt.show()
+    plt.hist(cantRondasN, bins=20, color='navy', edgecolor='black')
+    plt.title(f'Histograma de Cantidad de Rondas para 4 jugadores ({cantidadMuestras} muestras)')
+    plt.xlabel('Cantidad de rondas')
+    plt.ylabel('Frecuencia')
+    plt.grid(True)
+    plt.show()

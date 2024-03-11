@@ -46,8 +46,10 @@ def turnoJugador(jugadorInfo):
         color = tirarDado()
 
         if color == 'negro':
-            for key in jugadorInfo:
-                jugadorInfo[key] = False
+            colores_activos = [key for key, value in jugadorInfo.items() if key != 'tiempoJugado' and value]
+            if colores_activos:
+                color_desactivar = random.choice(colores_activos)
+                jugadorInfo[color_desactivar] = False
             return False
         elif color == 'rojo': 
             for color in coloresNecesariosTecho:
@@ -73,54 +75,17 @@ def ronda(jugadores):
     return (False, segundosJugados)
 
 
-datos_minutos = []
-datos_rondas = []
+def simulacion_y_grafico(cantidadJugadores, cantidadMuestras):
+    resultados = []
+    for _ in range(cantidadMuestras):
+        minutos, _ = run(cantidadJugadores)
+        resultados.append(minutos)
 
-for cantidadJugadores in range(1,500):
-    minutosJugadosN = []
-    cantRondasN = []
-    for i in range(100):
-        (minutosJugados, cantRondas) = run(cantidadJugadores)
-        minutosJugadosN.append(minutosJugados)
-        cantRondasN.append(cantRondas)
-        
-    datos_minutos.append(np.mean(minutosJugadosN))
-    datos_rondas.append(np.mean(cantRondasN))
+    plt.hist(resultados, bins=20, alpha=0.7, color='navy')
+    plt.xlabel('Minutos jugados', fontname='Times New Roman')
+    plt.ylabel('Frecuencia', fontname='Times New Roman')
+    plt.title(f'Histograma de minutos jugados ({cantidadJugadores} jugadores, {cantidadMuestras} muestras). Modalidad I.', fontname='Times New Roman')
+    plt.grid(False)
+    plt.show()
 
-print(datos_minutos)
-print(datos_rondas)
-
-for cantidadJugadores in [1, 2, 4, 10, 25, 50, 100, 250, 500]:
-    minutosJugadosN = []
-    cantRondasN = []
-    for i in range(100):
-        (minutosJugados, cantRondas) = run(cantidadJugadores)
-        minutosJugadosN.append(minutosJugados)
-        cantRondasN.append(cantRondas)
-        
-    print(f"\nResultados para {cantidadJugadores} jugadores:")
-    print("Minutos jugados:")
-    print("Media:", np.mean(minutosJugadosN))
-    print("Desviación estándar:", np.std(minutosJugadosN))
-    print("Máximo:", np.max(minutosJugadosN))
-    print("Mínimo:", np.min(minutosJugadosN))
-    print("Q1:", np.percentile(minutosJugadosN, 25))
-    print("Mediana:", np.median(minutosJugadosN))
-    print("Q3:", np.percentile(minutosJugadosN, 75))
-    print("Cantidad de rondas:", np.mean(cantRondasN))
-    
-plt.rc('font', family='Times New Roman')
-
-plt.plot(range(1,500), datos_minutos, color='navy', marker='o')
-plt.title('Minutos jugados vs Cantidad de jugadores. Modalidad II.')
-plt.xlabel('Cantidad de jugadores')
-plt.ylabel('Minutos jugados')
-plt.grid(True)
-plt.show()
-
-plt.plot(range(1, 500), datos_rondas, color='navy', marker='o')
-plt.title('Cantidad de Rondas vs Cantidad de jugadores. Modalidad II.')
-plt.xlabel('Cantidad de jugadores')
-plt.ylabel('Cantidad de rondas')
-plt.grid(True)
-plt.show()
+simulacion_y_grafico(4, 10000)
