@@ -5,6 +5,12 @@ from scipy.stats import kstest, norm, lognorm, gamma
 import matplotlib
 import seaborn as sns
 
+plt.rcParams['font.family'] = 'Times New Roman'
+matplotlib.rcParams['mathtext.fontset'] = 'custom'
+matplotlib.rcParams['mathtext.it'] = 'Times New Roman:italic'
+matplotlib.rcParams['mathtext.rm'] = 'Times New Roman'
+matplotlib.rcParams['mathtext.bf'] = 'Times New Roman:bold'
+
 colores = ['negro', 'rojo', 'azul', 'violeta', 'verde', 'amarillo']
 coloresNecesariosTecho = ['azul', 'violeta', 'verde', 'amarillo']
 
@@ -93,20 +99,32 @@ for cantidadMuestras in muestras:
     print("Mediana:", np.median(minutosJugadosN))
     print("Q3:", np.percentile(minutosJugadosN, 75))
     
-    plt.hist(minutosJugadosN, bins=20, color='navy', edgecolor='black')
+    min_value = min(minutosJugadosN)
+    max_value = max(minutosJugadosN)
+    bin_width = 0.5
+
+    num_bins = int(np.ceil((max_value - min_value) / bin_width))
+
+    plt.hist(minutosJugadosN, bins=num_bins, range=(min_value, max_value), color='navy', edgecolor='black')
     plt.title(f'Histograma de Minutos Jugados para 4 jugadores ({cantidadMuestras} muestras)')
     plt.xlabel('Minutos jugados')
     plt.ylabel('Frecuencia')
-    plt.grid(True)
+    plt.grid(False)
     plt.show()
 
-    plt.hist(cantRondasN, bins=20, color='navy', edgecolor='black')
+    # Repite el proceso para el otro conjunto de datos (cantRondasN)
+    min_value = min(cantRondasN)
+    max_value = max(cantRondasN)
+
+    num_bins = int(np.ceil((max_value - min_value) / bin_width))
+
+    plt.hist(cantRondasN, bins=num_bins, range=(min_value, max_value), color='navy', edgecolor='black')
     plt.title(f'Histograma de Cantidad de Rondas para 4 jugadores ({cantidadMuestras} muestras)')
     plt.xlabel('Cantidad de rondas')
     plt.ylabel('Frecuencia')
-    plt.grid(True)
+    plt.grid(False)
     plt.show()
-
+    
 muestras = [10000]
 
 for cantidadMuestras in muestras:
@@ -180,11 +198,6 @@ def simulacion_y_grafico(cantidadJugadores, cantidadMuestras):
 simulacion_y_grafico(4, 10000)
 
 # Grafico bondad de ajuste
-plt.rcParams['font.family'] = 'Times New Roman'
-matplotlib.rcParams['mathtext.fontset'] = 'custom'
-matplotlib.rcParams['mathtext.it'] = 'Times New Roman:italic'
-matplotlib.rcParams['mathtext.rm'] = 'Times New Roman'
-matplotlib.rcParams['mathtext.bf'] = 'Times New Roman:bold'
 
 def grafico(datos):
     # Ajuste a distribuciones
