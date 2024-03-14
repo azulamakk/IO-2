@@ -199,6 +199,22 @@ def simulacion_y_grafico(cantidadJugadores, cantidadMuestras):
 
 simulacion_y_grafico(4, 10000)
 
+def boxplotMinutos(datos):
+    plt.boxplot(datos, patch_artist=True)
+    plt.title('Boxplot de minutos jugados')
+    plt.xlabel('Minutos jugados')
+    plt.grid(False)
+    plt.show()
+
+def boxplotRondas(datos):
+    plt.boxplot(datos, patch_artist=True)
+    plt.title('Boxplot de cantidad de rondas')
+    plt.xlabel('Cantidad de rondas')
+    plt.grid(False)
+    plt.show()
+
+boxplotMinutos(minutosJugadosN)
+boxplotRondas(cantRondasN)
 
 def grafico(datos):
     # Ajuste a distribuciones

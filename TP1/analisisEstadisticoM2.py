@@ -134,7 +134,24 @@ for cantidadMuestras in muestras:
         (minutosJugados, cantRondas) = run(4)
         minutosJugadosN.append(minutosJugados)
         cantRondasN.append(cantRondas)
-        
+
+def boxplotMinutos(datos):
+    plt.boxplot(datos, patch_artist=True)
+    plt.title('Boxplot de minutos jugados')
+    plt.xlabel('Minutos jugados')
+    plt.grid(False)
+    plt.show()
+
+def boxplotRondas(datos):
+    plt.boxplot(datos, patch_artist=True)
+    plt.title('Boxplot de cantidad de rondas')
+    plt.xlabel('Cantidad de rondas')
+    plt.grid(False)
+    plt.show()
+
+boxplotMinutos(minutosJugadosN)
+boxplotRondas(cantRondasN)
+ 
 # Test de Kolmogorov-Smirnov para las rondas - normalidad
 ks_stat_rondas, p_value_rondas = kstest(cantRondasN, 'norm', args=(np.mean(cantRondasN), np.std(cantRondasN)))
 
