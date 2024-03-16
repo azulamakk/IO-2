@@ -183,7 +183,6 @@ print("\nTest de Kolmogorov-Smirnov para los minutos jugados:")
 print("Estadístico KS:", ks_stat_minutos)
 print("Valor p:", '{:.20f}'.format(p_value_minutos))
 
-# Grafico Cantidad de jugadores vs Cantidad de muestras
 def simulacion_y_grafico(cantidadJugadores, cantidadMuestras):
     resultados = []
     for _ in range(cantidadMuestras):
@@ -193,61 +192,42 @@ def simulacion_y_grafico(cantidadJugadores, cantidadMuestras):
     plt.hist(resultados, bins=20, alpha=0.7, color='navy')
     plt.xlabel('Minutos jugados', fontname='Times New Roman')
     plt.ylabel('Frecuencia', fontname='Times New Roman')
-    plt.title(f'Histograma de minutos jugados ({cantidadJugadores} jugadores, {cantidadMuestras} muestras). Modalidad II.', fontname='Times New Roman')
+    plt.title(f'Histograma de minutos jugados ({cantidadJugadores} jugadores, {cantidadMuestras} muestras). Modalidad I.', fontname='Times New Roman')
     plt.grid(False)
     plt.show()
 
 simulacion_y_grafico(4, 10000)
 
+def simulacion_y_grafico1(cantidadJugadores, cantidadMuestras):
+    resultados = []
+    for _ in range(cantidadMuestras):
+        _, rondas = run(cantidadJugadores)
+        resultados.append(rondas)
+
+    max_rondas = max(resultados)
+    bins = np.arange(max_rondas + 2) - 0.5  
+    plt.hist(resultados, bins=bins, alpha=0.7, color='navy')
+    plt.xlabel('rondas jugadas', fontname='Times New Roman')
+    plt.ylabel('Frecuencia', fontname='Times New Roman')
+    plt.title(f'Histograma de rondas jugados ({cantidadJugadores} jugadores, {cantidadMuestras} muestras). Modalidad I.', fontname='Times New Roman')
+    plt.grid(False)
+    plt.show()
+
+simulacion_y_grafico1(4, 10000)
+
 def boxplotMinutos(datos):
-    plt.boxplot(datos, patch_artist=True)
-    plt.title('Boxplot de minutos jugados')
+    plt.boxplot(datos, patch_artist=True,boxprops=dict(facecolor='navy'))
+    plt.title('Boxplot de minutos jugados. Modalidad I.')
     plt.xlabel('Minutos jugados')
     plt.grid(False)
     plt.show()
 
 def boxplotRondas(datos):
-    plt.boxplot(datos, patch_artist=True)
-    plt.title('Boxplot de cantidad de rondas')
+    plt.boxplot(datos, patch_artist=True, boxprops=dict(facecolor='navy'))
+    plt.title('Boxplot de cantidad de rondas. Modalidad I.')
     plt.xlabel('Cantidad de rondas')
     plt.grid(False)
     plt.show()
 
 boxplotMinutos(minutosJugadosN)
 boxplotRondas(cantRondasN)
-
-def grafico(datos):
-    # Ajuste a distribuciones
-    mean, std = norm.fit(datos)
-    shape, loc, scale = lognorm.fit(datos, floc=0)
-    a, loc, scale = gamma.fit(datos)
-
-    # Gráfico
-    plt.figure(figsize=(10, 6))
-
-    # Datos como puntos
-    sns.histplot(datos, bins=30, kde=False, color='navy', label='Datos', stat='density')
-
-    # Distribución normal
-    xmin, xmax = plt.xlim()
-    x = np.linspace(0, xmax, 100)  # Aquí se establece el inicio del rango en 0
-    p = norm.pdf(x, mean, std)
-    plt.plot(x, p, 'pink', linewidth=2, label=f'Normal: $\mu$={mean:.2f}, $\sigma$={std:.2f}')
-
-    # Distribución lognormal
-    p = lognorm.pdf(x, shape, loc=loc, scale=scale)
-    plt.plot(x, p, 'purple', linewidth=2, label=f'Lognormal: shape={shape:.2f}')
-
-    # Distribución gamma
-    p = gamma.pdf(x, a, loc=loc, scale=scale)
-    plt.plot(x, p, 'magenta', linewidth=2, label=f'Gamma: a={a:.2f}')
-
-    plt.xlabel('Minutos Jugados')
-    plt.ylabel('Densidad')
-    plt.title('Ajuste de datos a distribuciones teóricas')
-    plt.legend()
-    plt.grid(True)
-    plt.show()
-
-grafico(minutosJugadosN)
-grafico(cantRondasN)
